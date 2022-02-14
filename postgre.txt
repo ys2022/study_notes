@@ -1,0 +1,37 @@
+C:\Program Files\PostgreSQL\14\bin
+psql -d eso -U postgres -f C:\Users\admin\esca.sql
+psql -d eso -U postgres -f /home/ys/code/gitlab/esa/esca.sql
+psql -h 服务器 -U 用户名 -d 数据库 -p 端口
+导入数据库
+\q 退出
+\h：查看SQL命令的解释，比如\h select。
+\?：查看psql命令列表。+
+\l：列出所有数据库。
+\c [database_name]：连接其他数据库。
+\d：列出当前数据库的所有表格。
+\d [table_name]：列出某一张表格的结构。
+\du：列出所有用户。
+\e：打开文本编辑器。
+\conninfo：列出当前数据库和连接的信息。
+
+数据类型
+数值：bigint（大整数8字节）
+字符串：char varchar
+日期时间：date time 
+
+serial,smallserial,bigserial
+
+create database 数据库名
+drop database 数据库名
+create table test(id serial primary key,name varchar(255))
+insert into test(name) values ('jack')
+select * from 数据表;
+update test set name="mayun" where id=1
+delete from test where id=1
+create schema xxxxxxx;
+
+
+grant all privileges on database eso to www;
+grant all privileges on all tables in schema public to www;
+
+
