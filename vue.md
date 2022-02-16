@@ -109,7 +109,7 @@ vm较为底层的原理
         <script type="text/javascript">
             const vm = new Vue({
                 el:'#root',
-                data:{name:'尚硅谷'},
+                data:{name:'xxxx'},
                 methods: {
                      shwoInfo(){
                          //此处的this是vm
@@ -161,4 +161,205 @@ vm较为底层的原理
 					// console.log(e.key,e.keyCode)
 					console.log(e.target.value)}},})
 	</script>
+```
+
+## Vue.js 计算属性
+
+计算属性关键词: computed。
+计算属性：
+1.定义：要用的属性不存在，要通过已有属性计算得来。
+2.原理：底层借助了Objcet.defineproperty方法提供的getter和setter。
+3.get函数执行
+    (1).初次读取时会执行一次。
+    (2).当依赖的数据发生改变时会被再次调用。
+4.优势：与methods实现相比，内部有缓存机制（复用），效率更高，调试方便。
+5.注：
+    1.计算属性最终出现在vm上，直接读取使用即可。
+    2.如果计算属性要被修改，那必须写set函数去响应修改，且set中要引起计算时依赖的数据发生改变。
+
+```html
+<div id="app">
+  <p>原始字符串: {{ message }}</p>
+  <p>计算后反转字符串: {{ reversedMessage }}</p>
+</div>
+ 
+<script>
+var vm = new Vue({
+  el: '#app',
+  data: {
+    message: '666666'
+  },
+  computed: {
+    // 计算属性的 getter
+    reversedMessage: function () {
+      // `this` 指向 vm 实例
+      return this.message.split('').reverse().join('')
+    }}})
+</script>
+```
+
+## 监听属性
+
+监视属性watch：
+ 1. 当被监视的属性变化时, 回调函数自动调用, 进行相关操作
+ 2. 监视的属性必须存在，才能进行监视！！
+ 3. 监视的两种写法：
+   1. new Vue时传入watch配置
+   2. 通过vm.$watch监视
+
+```html
+<div id = "app">
+    <p style = "font-size:25px;">计数器: {{ counter }}</p>
+    <button @click = "counter++" style = "font-size:25px;">点我</button>
+</div>
+<script type = "text/javascript">
+var vm = new Vue({
+    el: '#app',
+    data: {
+        counter: 1
+    }
+});
+vm.$watch('counter', function(nval, oval) {
+    alert('计数器值的变化 :' + oval + ' 变为 ' + nval + '!');
+});
+</script>
+```
+
+## 绑定样式
+```html
+    <div id="root">
+        <!-- 绑定class样式--字符串写法，适用于：样式的类名不确定，需要动态指定 -->
+        <div class="basic" :class="mood" @click="changeMood">{{name}}</div> <br/><br/>
+        <!-- 绑定class样式--数组写法，适用于：要绑定的样式个数不确定、名字也不确定 -->
+        <div class="basic" :class="classArr">{{name}}</div> <br/><br/>
+        <!-- 绑定class样式--对象写法，适用于：要绑定的样式个数确定、名字也确定，但要动态决定用不用 -->
+        <div class="basic" :class="classObj">{{name}}</div> <br/><br/>
+        <!-- 绑定style样式--对象写法 -->
+        <div class="basic" :style="styleObj">{{name}}</div> <br/><br/>
+        <!-- 绑定style样式--数组写法 -->
+        <div class="basic" :style="styleArr">{{name}}</div>
+    </div>
+</body>
+
+<script type="text/javascript">
+    Vue.config.productionTip = false
+    
+    const vm = new Vue({
+        el:'#root',
+        data:{
+            name:'ysss',
+            mood:'normal',
+            classArr:['atguigu1','atguigu2','atguigu3'],
+            classObj:{
+                atguigu1:false,
+                atguigu2:false,
+            },
+            styleObj:{
+                fontSize: '40px',
+                color:'red',
+            },
+            styleObj2:{
+                backgroundColor:'orange'
+            },
+            styleArr:[
+                {
+                    fontSize: '40px',
+                    color:'blue',
+                },
+                {
+                    backgroundColor:'gray'
+                }
+            ]
+        },
+        methods: {
+            changeMood(){
+                const arr = ['happy','sad','normal']
+                const index = Math.floor(Math.random()*3)
+                this.mood = arr[index]
+            }
+        },
+    })
+</script>
+```
+
+## 条件判断 v-if
+
+```html
+<div id="app">
+    <div v-if="type === 'A'">
+      A
+    </div>
+    <div v-else-if="type === 'B'">
+      B
+    </div>
+    <div v-else-if="type === 'C'">
+      C
+    </div>
+    <div v-else>
+      Not A/B/C
+    </div>
+</div>
+    
+<script>
+new Vue({
+  el: '#app',
+  data: {
+    type: 'C'
+  }
+})
+</script>
+```
+
+## 循环使用 v-for 指令。
+v-for 指令需要以 site in sites 形式的特殊语法， sites 是源数据数组并且 site 是数组元素迭代的别名。
+v-for 可以绑定数据到数组来渲染一个列表：
+
+```html
+<div id="app">
+  <ol>
+    <li v-for="site in sites">
+      {{ site.name }}
+    </li>
+  </ol>
+</div>
+ 
+<script>
+new Vue({
+  el: '#app',
+  data: {
+    sites: [
+      { name: 'Runoob' },
+      { name: 'Google' },
+      { name: 'Taobao' }
+    ]
+  }
+})
+</script>
+```
+
+## 过滤器：
+定义：对要显示的数据进行特定格式化后再显示（适用于一些简单逻辑的处理）。
+语法：
+1. 注册过滤器：Vue.filter(name,callback) 或 new Vue{filters:{}}
+2. 使用过滤器：{{ xxx | 过滤器名}}  或  v-bind:属性 = "xxx | 过滤器名"
+备注：
+1. 过滤器也可以接收额外参数、多个过滤器也可以串联
+2. 并没有改变原本的数据, 是产生新的对应的数据
+   
+```html
+<div id="app">
+  {{ message | capitalize }}
+</div>
+<script>
+new Vue({
+  el: '#app',
+  data: {
+    message: 'runoob'
+  },
+  filters: {
+    capitalize: function (value) {
+      if (!value) return ''
+      value = value.toString()
+      return value.charAt(0).toUpperCase() + value.slice(1)}}})
+</script>
 ```
